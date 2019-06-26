@@ -1,0 +1,11 @@
+connections:
+
+  - name: my-sqlite-database
+    driver: sqlite:///
+    connection: /tmp/production-database.db
+
+connections:
+
+  - name: my-sqlite-database
+    driver: sqlite:///
+    connection: /tmp/test-database.db

@@ -6,7 +6,7 @@ __author__ = "Tom Malkin"
 __copyright__ = "Tom Malkin"
 __license__ = "mit"
 
-from sqema import Sqema
+from sqema.sqema import Sqema
 import sys
 import logging
 

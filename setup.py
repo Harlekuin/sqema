@@ -2,7 +2,7 @@ from io import open
 
 from setuptools import find_packages, setup
 
-with open("src/simqle/__init__.py", "r") as f:
+with open("sqema/__init__.py", "r") as f:
     for line in f:
         if line.startswith("__version__"):
             version = line.strip().split("=")[1].strip(' \'"')
@@ -13,7 +13,7 @@ with open("src/simqle/__init__.py", "r") as f:
 with open("README.md", "r", encoding="utf-8") as f:
     readme = f.read()
 
-REQUIRES = ["simqle=0.3.3"]
+REQUIRES = ["simqle==0.3.3"]
 
 setup(
     name="sqema",
