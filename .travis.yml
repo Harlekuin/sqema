@@ -1,0 +1,34 @@
+# Disable sudo to speed up the build
+sudo: false
+
+# Add database services
+services:
+  - mysql
+  - postgresql
+
+before_script:
+  - mysql -e 'CREATE DATABASE testdatabase;'
+  - psql -c 'create database testdatabase;' -U postgres
+
+# Set the build language to Python
+language: python
+
+# Set the python version to 3.5 and 3.6
+python:
+  - 3.5
+  - 3.6
+  - 3.7
+
+# Install the codecov pip dependency
+install:
+  - pip install codecov pytest behave
+  - pip install -r requirements.txt
+
+# Run the unit test
+script:
+  - coverage run -m behave
+
+
+# Push the results back to codecov
+after_success:
+  - codecov

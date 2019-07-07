@@ -18,24 +18,16 @@ class DatabaseRoot:
         self.path = pathlib.Path(database_directory)
 
     def find_object(self, cm, search_path=None, schema=None):
-        print("finding path in", (search_path or self.path))
         for path in (search_path or self.path).iterdir():
-            print("checking path", path)
 
             if path.is_dir():
                 if str(path).endswith(".table"):  # object found
-                    print("found a table", path)
 
                     self.ensure_table(cm, path, schema)
                 else:
 
                     if str(path).endswith(".schema"):
-                        schema = path.stem
-                        print("schema found:", schema)
-                    else:
-                        schema = None
-
-                    self.find_object(cm, path, schema=schema)
+                        self.find_object(cm, path, schema=path.stem)
 
     def ensure_table(self, cm, path, schema):
         # check for definition
@@ -92,10 +84,8 @@ class Sqema:
         # look for possible database paths
         for connection in self.cm.config["connections"]:
             con_name = connection["name"]
-            print("checking con_name", con_name)
             database_path = pathlib.Path(root_path, con_name + ".database")
             if database_path.exists():
-                print("con_name", con_name, "exists. adding to databases")
                 self.database_roots.append(DatabaseRoot(database_path,
                                                         con_name))
 

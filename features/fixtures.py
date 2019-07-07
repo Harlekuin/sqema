@@ -19,6 +19,9 @@ def sqlite_cleanup():
         "/tmp/prod-database.db",
         "/tmp/dev-database.db",
         "/tmp/test-database.db",
+        "/tmp/prod-database2.db",
+        "/tmp/dev-database2.db",
+        "/tmp/test-database2.db",
     ]
 
     for database in databases:

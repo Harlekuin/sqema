@@ -4,14 +4,26 @@ connections:
     driver: sqlite:///
     connection: /tmp/prod-database.db
 
+  - name: my-sqlite-database2
+    driver: sqlite:///
+    connection: /tmp/prod-database2.db
+
 dev-connections:
 
   - name: my-sqlite-database
     driver: sqlite:///
     connection: /tmp/dev-database.db
 
+  - name: my-sqlite-database2
+    driver: sqlite:///
+    connection: /tmp/dev-database2.db
+
 test-connections:
 
   - name: my-sqlite-database
     driver: sqlite:///
     connection: /tmp/test-database.db
+
+  - name: my-sqlite-database2
+    driver: sqlite:///
+    connection: /tmp/test-database2.db
