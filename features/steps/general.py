@@ -5,6 +5,7 @@ import simqle as sq
 import os
 from sqema import Sqema
 
+
 # --- Given ---
 
 @given("we are using the {directory} directory")
@@ -21,29 +22,31 @@ def use_directory(context, directory):
     context.cm = sq.ConnectionManager(connections_file)
     context.sqema_directory = sqema_directory
 
+
 # --- Given ---
 
 
 # --- When ---
 
-@when("we ensure the test environment")
-def ensure_test_environment(context):
-    os.environ["SIMQLE_TEST"] = "True"
+@when("we ensure the {mode} environment")
+def ensure_test_environment(context, mode):
+    os.environ["SIMQLE_MODE"] = mode
 
     my_sqema = Sqema(cm=context.cm,
                      sqema_directory=context.sqema_directory)
 
     my_sqema.ensure_sql_environment()
 
-    del os.environ["SIMQLE_TEST"]
+    del os.environ["SIMQLE_MODE"]
+
 
 # --- When ---
 
 
 # --- Then ---
 
-@then("the test database matches the production database")
-def test_database_matches_production(context):
+@then("the {mode} databases match the sqema")
+def test_database_matches_production(context, mode):
     """
     Check if the test database matches the attempted sqema.
 
@@ -56,7 +59,7 @@ def test_database_matches_production(context):
       Score REAL
     )
     """
-    os.environ["SIMQLE_TEST"] = "True"
+    os.environ["SIMQLE_MODE"] = mode
 
     sql = """
         select id, FirstName, Age, Score
@@ -76,6 +79,6 @@ def test_database_matches_production(context):
 
     assert rst == correct_rst
 
-    del os.environ["SIMQLE_TEST"]
+    del os.environ["SIMQLE_MODE"]
 
 # --- Then ---

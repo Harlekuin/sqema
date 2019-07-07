@@ -16,8 +16,8 @@ def sqlite_cleanup():
     """Remove all known test databases."""
     databases = [
         "/tmp/database.db",
-        "/tmp/production-database.db",
-        "/tmp/development-database.db",
+        "/tmp/prod-database.db",
+        "/tmp/dev-database.db",
         "/tmp/test-database.db",
     ]
 

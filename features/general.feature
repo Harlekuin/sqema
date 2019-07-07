@@ -5,7 +5,7 @@ Feature: Ensure a database environment
   So I can test and develop on them safely
 
   @fixture.sqlite
-  Scenario: Basic Functionality Test
+  Scenario: Development Mode Test
     Given we are using the general-test directory
-    When we ensure the test environment
-    Then the test database matches the production database
+    When we ensure the development environment
+    Then the development databases match the sqema
