@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Defines the Sqema class."""
 import pathlib
-from typing import List
 
 import simqle
 import pandas as pd
@@ -62,7 +61,6 @@ class DatabaseRoot:
 
 class Sqema:
     """The Sqema class."""
-    database_roots: List[DatabaseRoot]
 
     def __init__(self, cm: simqle.ConnectionManager,
                  sqema_directory="./sqema.sqema"):

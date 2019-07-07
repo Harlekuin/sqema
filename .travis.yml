@@ -15,7 +15,6 @@ language: python
 
 # Set the python version to 3.5 and 3.6
 python:
-  - 3.5
   - 3.6
   - 3.7
 
