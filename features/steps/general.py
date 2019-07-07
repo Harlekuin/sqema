@@ -52,7 +52,7 @@ def test_database_matches_production(context, mode):
 
     The table looks like:
 
-    CREATE TABLE [MySchema].[MyTable] (
+    CREATE TABLE [main].[MyTable] (
       id INT PRIMARY KEY ASC AUTOINCREMENT,
       FirstName TEXT,
       Age INT,
@@ -63,21 +63,39 @@ def test_database_matches_production(context, mode):
 
     sql = """
         select id, FirstName, Age, Score
-        from [MySchema].[MyTable]
+        from [main].[MyTable]
     """
 
     rst = context.cm.recordset(con_name="my-sqlite-database", sql=sql)
-
     correct_rst = (
-        ["id", "FirstName", "Age", "Score"],
-
         [
             (1, "James", 34, 28.5),
             (2, "Thea", 29, 6.05),
-        ]
+        ],
+
+        ["id", "FirstName", "Age", "Score"],
     )
 
     assert rst == correct_rst
+
+
+    sql = """
+        select id, FirstName, Age, Score
+        from [MyTable]
+    """
+
+    rst = context.cm.recordset(con_name="my-sqlite-database2", sql=sql)
+    correct_rst = (
+        [
+            (1, "James", 34, 28.5),
+            (2, "Thea", 29, 6.05),
+        ],
+
+        ["id", "FirstName", "Age", "Score"],
+    )
+
+    assert rst == correct_rst
+
 
     del os.environ["SIMQLE_MODE"]
 
