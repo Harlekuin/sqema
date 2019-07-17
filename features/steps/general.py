@@ -61,6 +61,7 @@ def test_database_matches_production(context, mode):
     """
     os.environ["SIMQLE_MODE"] = mode
 
+    # Check the table on the first connection
     sql = """
         select id, FirstName, Age, Score
         from [main].[MyTable]
@@ -78,7 +79,7 @@ def test_database_matches_production(context, mode):
 
     assert rst == correct_rst
 
-
+    # Check the table on the second connection
     sql = """
         select id, FirstName, Age, Score
         from [MyTable]
@@ -96,6 +97,25 @@ def test_database_matches_production(context, mode):
 
     assert rst == correct_rst
 
+    # Check the view on the first connection
+    sql = """
+        select FirstName, HalfAge
+        from [MyView]
+    """
+
+    rst = context.cm.recordset(con_name="my-sqlite-database", sql=sql)
+    correct_rst = (
+        [
+            ("James", 17),
+            ("Thea", 14.5),
+        ],
+
+        ["FirstName", "HalfAge"],
+    )
+
+    print(rst)
+    print(correct_rst)
+    assert rst == correct_rst
 
     del os.environ["SIMQLE_MODE"]
 
