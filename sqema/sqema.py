@@ -20,22 +20,39 @@ class DatabaseRoot:
         for path in (search_path or self.path).iterdir():
 
             if path.is_dir():
-                if str(path).endswith(".table"):  # object found
-
+                if str(path).endswith(".table"):  # table found
                     self.ensure_table(cm, path, schema)
-                else:
 
+                elif str(path).endswith(".view"):  # table found
+                    self.ensure_view(cm, path)
+
+                else:
                     if str(path).endswith(".schema"):
                         self.find_object(cm, path, schema=path.stem)
 
-    def ensure_table(self, cm, path, schema):
-        # check for definition
+    @staticmethod
+    def get_definition(path):
         definition_path = pathlib.Path(path, "definition.sql")
         if definition_path.exists():
             with open(definition_path, "r") as f:
-                sql = f.read()
+                return f.read()
 
-            cm.execute_sql(sql=sql, con_name=self.con_name)
+    def ensure_view(self, cm, path):
+        sql = self.get_definition(path)
+        if not sql:
+            # TODO: add warning
+            return
+
+        cm.execute_sql(sql=sql, con_name=self.con_name)
+
+    def ensure_table(self, cm, path, schema):
+
+        sql = self.get_definition(path)
+        if not sql:
+            # TODO: add warning
+            return
+
+        cm.execute_sql(sql=sql, con_name=self.con_name)
 
         # check for example data
         data_path = pathlib.Path(path, "data.csv")
