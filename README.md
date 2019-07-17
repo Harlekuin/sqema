@@ -17,3 +17,6 @@ Or choose your poison:
 - `$ pip install sqema`
 - `$ poetry add sqema`
 - `$ pipenv install sqema`
+
+
+## Building a Schema Directory
