@@ -8,6 +8,14 @@ connections:
     driver: sqlite:///
     connection: /tmp/prod-database2.db
 
+  - name: my-mysql-database
+    driver: mysql+pymysql://
+    connection: root@localhost/prod
+
+  - name: my-postgresql-database
+    driver: postgresql+psycopg2://
+    connection: postgres@localhost/prod
+
 dev-connections:
 
   - name: my-sqlite-database
@@ -18,6 +26,14 @@ dev-connections:
     driver: sqlite:///
     connection: /tmp/dev-database2.db
 
+  - name: my-mysql-database
+    driver: mysql+pymysql://
+    connection: root@localhost/dev
+
+  - name: my-postgresql-database
+    driver: postgresql+psycopg2://
+    connection: postgres@localhost/dev
+
 test-connections:
 
   - name: my-sqlite-database
@@ -27,3 +43,11 @@ test-connections:
   - name: my-sqlite-database2
     driver: sqlite:///
     connection: /tmp/test-database2.db
+
+  - name: my-mysql-database
+    driver: mysql+pymysql://
+    connection: root@localhost/test
+
+  - name: my-postgresql-database
+    driver: postgresql+psycopg2://
+    connection: postgres@localhost/test

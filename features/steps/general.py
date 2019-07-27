@@ -117,6 +117,25 @@ def test_database_matches_production(context, mode):
     print(correct_rst)
     assert rst == correct_rst
 
+
+    # check mysql
+    sql = "select id, textfield from AMySQLTable"
+    rst = context.cm.recordset(con_name="my-mysql-database", sql=sql)
+    correct_rst = (
+        [
+            (0, "somedata"),
+            (1, "some more data"),
+        ],
+
+        ["id", "textfield"],
+    )
+    assert rst == correct_rst
+
+    # check postgresql
+    sql = "select id, textfield from apostgresqltable"
+    rst = context.cm.recordset(con_name="my-postgresql-database", sql=sql)
+    assert rst == correct_rst
+
     del os.environ["SIMQLE_MODE"]
 
 # --- Then ---

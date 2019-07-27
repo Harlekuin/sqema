@@ -37,12 +37,18 @@ class DatabaseRoot:
             with open(definition_path, "r") as f:
                 return f.read()
 
+    def ensure_procedure(self, cm, path):
+        sql = self.get_definition(path)
+        if not sql:
+            # TODO: add warning
+            return
+        cm.execute_sql(sql=sql, con_name=self.con_name)
+
     def ensure_view(self, cm, path):
         sql = self.get_definition(path)
         if not sql:
             # TODO: add warning
             return
-
         cm.execute_sql(sql=sql, con_name=self.con_name)
 
     def ensure_table(self, cm, path, schema):
