@@ -24,7 +24,7 @@ python:
 
 # Install the codecov pip dependency
 install:
-  - pip install codecov pytest behave pymysql
+  - pip install codecov pytest behave pymysql psycopg2
   - pip install -r requirements.txt
 
 # Run the unit test
