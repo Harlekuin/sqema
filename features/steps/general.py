@@ -117,7 +117,6 @@ def test_database_matches_production(context, mode):
     # print(correct_rst)
     assert rst == correct_rst
 
-
     # check mysql
     sql = "select id, testfield from AMySQLTable"
     rst = context.cm.recordset(con_name="my-mysql-database", sql=sql)
@@ -129,6 +128,11 @@ def test_database_matches_production(context, mode):
 
         ["id", "textfield"],
     )
+    print("rst")
+    print(rst)
+    print("correct_rst")
+    print(correct_rst)
+
     assert rst == correct_rst
 
     # check postgresql
