@@ -123,8 +123,8 @@ def test_database_matches_production(context, mode):
     rst = context.cm.recordset(con_name="my-mysql-database", sql=sql)
     correct_rst = (
         [
-            (0, "somedata"),
-            (1, "some more data"),
+            (1, "somedata"),
+            (2, "some more data"),
         ],
 
         ["id", "textfield"],
