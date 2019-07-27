@@ -126,7 +126,7 @@ def test_database_matches_production(context, mode):
             (2, "some more data"),
         ],
 
-        ["id", "textfield"],
+        ["id", "testfield"],
     )
     print("rst")
     print(rst)
