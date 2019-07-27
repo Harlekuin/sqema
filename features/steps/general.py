@@ -113,13 +113,13 @@ def test_database_matches_production(context, mode):
         ["FirstName", "HalfAge"],
     )
 
-    print(rst)
-    print(correct_rst)
+    # print(rst)
+    # print(correct_rst)
     assert rst == correct_rst
 
 
     # check mysql
-    sql = "select id, textfield from AMySQLTable"
+    sql = "select id, testfield from AMySQLTable"
     rst = context.cm.recordset(con_name="my-mysql-database", sql=sql)
     correct_rst = (
         [
@@ -132,7 +132,7 @@ def test_database_matches_production(context, mode):
     assert rst == correct_rst
 
     # check postgresql
-    sql = "select id, textfield from apostgresqltable"
+    sql = "select id, testfield from apostgresqltable"
     rst = context.cm.recordset(con_name="my-postgresql-database", sql=sql)
     assert rst == correct_rst
 
