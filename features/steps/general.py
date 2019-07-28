@@ -38,7 +38,6 @@ def ensure_test_environment(context, mode):
     my_sqema.ensure_sql_environment()
 
     del os.environ["SIMQLE_MODE"]
-    raise
 
 # --- When ---
 

@@ -19,12 +19,15 @@ class DatabaseRoot:
     def find_object(self, cm, search_path=None, schema=None):
 
         def check_process(endings):
-            # iterdir will check in schema folders
             for path in (search_path or self.path).iterdir():
                 if path.is_dir():
                     for ending in endings:
                         if str(path).endswith(".{}".format(ending)):
                             self.ensure_process(cm, path)
+
+        if str(search_path).endswith(".schema"):
+            self.find_object(cm, search_path, schema=search_path.stem)
+            return
 
         # Run 1: Pre settings
         check_process(endings=["presetting"])
