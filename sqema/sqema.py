@@ -26,6 +26,9 @@ class DatabaseRoot:
                 elif str(path).endswith(".view"):  # table found
                     self.ensure_view(cm, path)
 
+                elif str(path).endswith(".procedure"):  # table found
+                    self.ensure_procedure(cm, path)
+
                 else:
                     if str(path).endswith(".schema"):
                         self.find_object(cm, path, schema=path.stem)
