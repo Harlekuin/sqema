@@ -33,6 +33,7 @@ class DatabaseRoot:
         for path in (search_path or self.path).iterdir():
             if path.is_dir():
                 if str(path).endswith(".table"):
+                    print(f"adding table {str(path)}")
                     self.ensure_table(cm, path, schema)
 
         # Run 3: Indexes
@@ -50,6 +51,7 @@ class DatabaseRoot:
     def ensure_process(self, cm, path):
         sql = self.get_definition(path)
         if not sql:
+            print(f"no sql found for {path}")
             return
         cm.execute_sql(sql=sql, con_name=self.con_name)
 

@@ -38,22 +38,12 @@ def ensure_test_environment(context, mode):
     my_sqema.ensure_sql_environment()
 
     del os.environ["SIMQLE_MODE"]
-
+    raise
 
 # --- When ---
 
 
 # --- Then ---
-
-# Then the development tables match the sqema
-# AND the development views match the sqema
-# AND the development procedures match the sqema
-# AND the development functions match the sqema
-# AND the development indexes match the sqema
-# AND the development presettings match the sqema
-# AND the development postsettings match the sqema
-# AND the development other match the sqema
-
 
 @then("the {mode} tables match the sqema")
 def test_tables(context, mode):
