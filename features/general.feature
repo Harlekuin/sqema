@@ -8,4 +8,11 @@ Feature: Ensure a database environment
   Scenario: Development Mode Test
     Given we are using the general-test directory
     When we ensure the development environment
-    Then the development databases match the sqema
+    Then the development tables match the sqema
+    AND the development views match the sqema
+    AND the development procedures match the sqema
+    AND the development functions match the sqema
+    AND the development indexes match the sqema
+#    AND the development presettings match the sqema
+#    AND the development postsettings match the sqema
+#    AND the development other match the sqema

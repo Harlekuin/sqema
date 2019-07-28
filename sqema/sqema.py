@@ -17,51 +17,44 @@ class DatabaseRoot:
         self.path = pathlib.Path(database_directory)
 
     def find_object(self, cm, search_path=None, schema=None):
-        for path in (search_path or self.path).iterdir():
 
+        def check_process(endings):
+            # iterdir will check in schema folders
+            for path in (search_path or self.path).iterdir():
+                if path.is_dir():
+                    for ending in endings:
+                        if str(path).endswith(".{}".format(ending)):
+                            self.ensure_process(cm, path)
+
+        # Run 1: Pre settings
+        check_process(endings=["presetting"])
+
+        # Run 2: Tables
+        for path in (search_path or self.path).iterdir():
             if path.is_dir():
-                if str(path).endswith(".table"):  # table found
+                if str(path).endswith(".table"):
                     self.ensure_table(cm, path, schema)
 
-                elif str(path).endswith(".view"):  # table found
-                    self.ensure_view(cm, path)
+        # Run 3: Indexes
+        check_process(endings=["index"])
 
-                elif str(path).endswith(".procedure"):  # table found
-                    self.ensure_procedure(cm, path)
+        # Run 4: Views, Procedures and Functions
+        check_process(endings=["view", "procedure", "function"])
 
-                else:
-                    if str(path).endswith(".schema"):
-                        self.find_object(cm, path, schema=path.stem)
+        # Run 5: Other
+        check_process(endings=["other"])
 
-    @staticmethod
-    def get_definition(path):
-        definition_path = pathlib.Path(path, "definition.sql")
-        if definition_path.exists():
-            with open(definition_path, "r") as f:
-                return f.read()
+        # Run 6: Post Settings
+        check_process(endings=["postsetting"])
 
-    def ensure_procedure(self, cm, path):
+    def ensure_process(self, cm, path):
         sql = self.get_definition(path)
         if not sql:
-            # TODO: add warning
-            return
-        cm.execute_sql(sql=sql, con_name=self.con_name)
-
-    def ensure_view(self, cm, path):
-        sql = self.get_definition(path)
-        if not sql:
-            # TODO: add warning
             return
         cm.execute_sql(sql=sql, con_name=self.con_name)
 
     def ensure_table(self, cm, path, schema):
-
-        sql = self.get_definition(path)
-        if not sql:
-            # TODO: add warning
-            return
-
-        cm.execute_sql(sql=sql, con_name=self.con_name)
+        self.ensure_process(cm, path)
 
         # check for example data
         data_path = pathlib.Path(path, "data.csv")
@@ -83,6 +76,20 @@ class DatabaseRoot:
                     kwargs["schema"] = schema
 
                 data_df.to_sql(**kwargs)
+
+        index_path = pathlib.Path(path, "index.sql")
+        if index_path.exists():
+            with open(index_path, "r") as f:
+                sql = f.read()
+
+            cm.execute_sql(sql=sql, con_name=self.con_name)
+
+    @staticmethod
+    def get_definition(path):
+        definition_path = pathlib.Path(path, "definition.sql")
+        if definition_path.exists():
+            with open(definition_path, "r") as f:
+                return f.read()
 
 
 class Sqema:

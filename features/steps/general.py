@@ -45,23 +45,22 @@ def ensure_test_environment(context, mode):
 
 # --- Then ---
 
-@then("the {mode} databases match the sqema")
-def test_database_matches_production(context, mode):
-    """
-    Check if the test database matches the attempted sqema.
+# Then the development tables match the sqema
+# AND the development views match the sqema
+# AND the development procedures match the sqema
+# AND the development functions match the sqema
+# AND the development indexes match the sqema
+# AND the development presettings match the sqema
+# AND the development postsettings match the sqema
+# AND the development other match the sqema
 
-    The table looks like:
 
-    CREATE TABLE [main].[MyTable] (
-      id INT PRIMARY KEY ASC AUTOINCREMENT,
-      FirstName TEXT,
-      Age INT,
-      Score REAL
-    )
-    """
+@then("the {mode} tables match the sqema")
+def test_tables(context, mode):
+    """Check if the tables match the sqema"""
     os.environ["SIMQLE_MODE"] = mode
 
-    # Check the table on the first connection
+    # --- sqlite connection 1 ---
     sql = """
         select id, FirstName, Age, Score
         from [main].[MyTable]
@@ -78,8 +77,9 @@ def test_database_matches_production(context, mode):
     )
 
     assert rst == correct_rst
+    # --- sqlite connection 1 ---
 
-    # Check the table on the second connection
+    # --- sqlite connection 2 ---
     sql = """
         select id, FirstName, Age, Score
         from [MyTable]
@@ -89,15 +89,51 @@ def test_database_matches_production(context, mode):
     correct_rst = (
         [
             (1, "James", 34, 28.5),
-            (2, "Thea", 29, 6.05),
+            (2, "Thea", 29, 6.06),
         ],
 
         ["id", "FirstName", "Age", "Score"],
     )
 
     assert rst == correct_rst
+    # --- sqlite connection 2 ---
 
-    # Check the view on the first connection
+    # --- MySQL connection ---
+    sql = "select id, testfield from AMySQLTable"
+    rst = context.cm.recordset(con_name="my-mysql-database", sql=sql)
+    correct_rst = (
+        [
+            (1, "somedata"),
+            (2, "some more data"),
+        ],
+
+        ["id", "testfield"],
+    )
+    assert rst == correct_rst
+    # --- MySQL connection ---
+
+    # --- PostGreSQL connection ---
+    sql = "select id, testfield from apostgresqltable"
+    rst = context.cm.recordset(con_name="my-postgresql-database", sql=sql)
+    correct_rst = (
+        [
+            (1, "somedata 2"),
+            (2, "some more data 2"),
+        ],
+
+        ["id", "testfield"],
+    )
+    assert rst == correct_rst
+    # --- PostGreSQL connection ---
+
+    del os.environ["SIMQLE_MODE"]
+
+
+@then("the {mode} views match the sqema")
+def test_views(context, mode):
+    """Check if the tables match the sqema"""
+    os.environ["SIMQLE_MODE"] = mode
+
     sql = """
         select FirstName, HalfAge
         from [MyView]
@@ -113,12 +149,16 @@ def test_database_matches_production(context, mode):
         ["FirstName", "HalfAge"],
     )
 
-    # print(rst)
-    # print(correct_rst)
     assert rst == correct_rst
+    del os.environ["SIMQLE_MODE"]
 
-    # check mysql
-    sql = "select id, testfield from AMySQLTable"
+
+@then("the {mode} procedures match the sqema")
+def test_procedures(context, mode):
+    """Check if the tables match the sqema"""
+    os.environ["SIMQLE_MODE"] = mode
+
+    sql = "call MySP();"
     rst = context.cm.recordset(con_name="my-mysql-database", sql=sql)
     correct_rst = (
         [
@@ -128,18 +168,51 @@ def test_database_matches_production(context, mode):
 
         ["id", "testfield"],
     )
-    print("rst")
-    print(rst)
-    print("correct_rst")
-    print(correct_rst)
-
-    assert rst == correct_rst
-
-    # check postgresql
-    sql = "select id, testfield from apostgresqltable"
-    rst = context.cm.recordset(con_name="my-postgresql-database", sql=sql)
     assert rst == correct_rst
 
     del os.environ["SIMQLE_MODE"]
 
-# --- Then ---
+
+@then("the {mode} functions match the sqema")
+def test_functions(context, mode):
+    """Check if the tables match the sqema"""
+    os.environ["SIMQLE_MODE"] = mode
+
+    sql = """
+        select 
+            id, 
+            testfield, 
+            SomeFunction() as somenum
+            from AMySQLTable;
+        """
+    rst = context.cm.recordset(con_name="my-mysql-database", sql=sql)
+    correct_rst = (
+        [
+            (1, "somedata", 3),
+            (2, "some more data", 3),
+        ],
+
+        ["id", "testfield", "somenum"],
+    )
+    assert rst == correct_rst
+
+    del os.environ["SIMQLE_MODE"]
+
+
+@then("the {mode} indexes match the sqema")
+def test_indexes(context, mode):
+    """Check if the tables match the sqema"""
+    os.environ["SIMQLE_MODE"] = mode
+
+    sql = "PRAGMA index_list(MyTable);"
+
+    rst = context.cm.recordset(con_name="my-mysql-database", sql=sql)
+
+    correct_rst = ([(0, "idx_MyTable_FirstName", 1), ],
+                   ["seq", "name", "unique"],)
+    print(rst)
+    print(correct_rst)
+
+    assert rst == correct_rst
+
+    del os.environ["SIMQLE_MODE"]
