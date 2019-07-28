@@ -23,6 +23,7 @@ class DatabaseRoot:
                 if path.is_dir():
                     for ending in endings:
                         if str(path).endswith(".{}".format(ending)):
+                            print(f"running process {path}")
                             self.ensure_process(cm, path)
 
         for path in (search_path or self.path).iterdir():
