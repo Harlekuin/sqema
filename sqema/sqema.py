@@ -25,9 +25,10 @@ class DatabaseRoot:
                         if str(path).endswith(".{}".format(ending)):
                             self.ensure_process(cm, path)
 
-        if str(search_path).endswith(".schema"):
-            self.find_object(cm, search_path, schema=search_path.stem)
-            return
+        for path in (search_path or self.path).iterdir():
+            if str(path).endswith(".schema"):
+                self.find_object(cm, path, schema=path.stem)
+                return
 
         # Run 1: Pre settings
         check_process(endings=["presetting"])
