@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 """Defines the Sqema class."""
+import json
 import pathlib
 
-import simqle
+from simqle import ConnectionManager
 import pandas as pd
 
 
@@ -100,32 +101,39 @@ class DatabaseRoot:
 
 
 class Sqema:
-    """The Sqema class."""
-
-    def __init__(self, cm: simqle.ConnectionManager,
-                 sqema_directory="./sqema.sqema"):
+    def __init__(self, cm: ConnectionManager, sqema_file="./sqema.yaml"):
         """
-        Initialise a Sqema class.
+        Initialise a Sqema Instance.
+
+        This object organises the structure and data of your databases.
 
         args:
-         - cm: a simqle.ConnectionManager object
-         - sqema_directory: the directory that describes the SQL schema
+         - cm: a Connection Manager
+         - structure_file: the file that defines the database structure
         """
         self.cm = cm
-        self.sqema_directory = sqema_directory
+        self.sqema_file = sqema_file
+
+        with open(self.sqema_file, "r") as read_file:
+            self.structure = json.load(read_file)
+
         self.database_roots = []
+        self.ensure_sql_environment()
 
     def ensure_sql_environment(self):
         """Ensure a SQL environment."""
-        root_path = pathlib.Path(self.sqema_directory)
+        for connection in self.structure:
+            print(connection)
 
-        # look for possible database paths
-        for connection in self.cm.config["connections"]:
-            con_name = connection["name"]
-            database_path = pathlib.Path(root_path, con_name + ".database")
-            if database_path.exists():
-                self.database_roots.append(DatabaseRoot(database_path,
-                                                        con_name))
-
-        for database_root in self.database_roots:
-            database_root.find_object(self.cm)
+        # root_path = pathlib.Path(self.sqema_directory)
+        #
+        # # look for possible database paths
+        # for connection in self.cm.config["connections"]:
+        #     con_name = connection["name"]
+        #     database_path = pathlib.Path(root_path, con_name + ".database")
+        #     if database_path.exists():
+        #         self.database_roots.append(DatabaseRoot(database_path,
+        #                                                 con_name))
+        #
+        # for database_root in self.database_roots:
+        #     database_root.find_object(self.cm)

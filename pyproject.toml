@@ -7,7 +7,7 @@ authors = ["Tom Malkin <tommalkin28@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.6"
 pandas = "^0.24.2"
-simqle = "^0.4.2"
+simqle = "*"
 
 [tool.poetry.dev-dependencies]
 pytest = "^3.0"
