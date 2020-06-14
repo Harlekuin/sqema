@@ -2,18 +2,17 @@
 name = "sqema"
 version = "0.1.0"
 description = ""
-authors = ["Tom Malkin <tommalkin28@gmail.com>"]
+authors = ["Thomas Malkin <tommalkin28@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.6"
-pandas = "^0.24.2"
-simqle = "*"
+python = "^3.8"
+pandas = "^1.0.4"
+simqle = "^0.5.7"
 
 [tool.poetry.dev-dependencies]
-pytest = "^3.0"
-behave = "^1.2"
-coverage = "^4.5"
-pymysql = "^0.9.3"
+pytest = "^5.4.3"
+pytest-mock = "^3.1.1"
+coverage = "^5.1"
 
 [build-system]
 requires = ["poetry>=0.12"]
