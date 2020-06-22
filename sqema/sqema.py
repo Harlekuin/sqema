@@ -55,20 +55,20 @@ class Sqema:
         logger.info(f"Setting up Schema {schema['name']}")
 
         # Config
-        for config in schema["config"]:
+        for config in schema.get("config", []):
             self.create_object(config, conn)
 
         # Tables
-        for table in schema["tables"]:
+        for table in schema.get("tables", []):
             self.create_object(table, conn)
             self.insert_data(table, conn, schema=schema["name"])
 
         # Views
-        for view in schema["views"]:
+        for view in schema.get("views", []):
             self.create_object(view, conn)
 
         # Other. Use for objects like procedures or triggers
-        for other in schema["others"]:
+        for other in schema.get("others", []):
             self.create_object(other, conn)
 
     @staticmethod
