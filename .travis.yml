@@ -25,7 +25,7 @@ python:
 # Install the codecov pip dependency
 install:
   - pip install codecov pytest 
-  - pip install -r requirements.txt
+  - pip install -r requirements-dev.txt
 
 # Run the unit test
 script:
