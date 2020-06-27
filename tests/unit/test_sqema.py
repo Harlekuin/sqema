@@ -49,7 +49,6 @@ def test_setup_schema(mocker, test_sqema):
     mocker.patch.object(Sqema, "insert_data", auto_spec=True)
 
     # config only object
-
     config_object = {"definition": {"type": "sql", "definition": "some config"}}
 
     test_config_schema = {"name": "test_schema", "config": [config_object]}
@@ -59,7 +58,6 @@ def test_setup_schema(mocker, test_sqema):
     sq.create_object.assert_any_call(config_object, "some_conn")
 
     # table only object
-
     table_object = {
         "name": "test_table",
         "definition": {"type": "sql", "definition": "some table"},
@@ -75,7 +73,59 @@ def test_setup_schema(mocker, test_sqema):
     sq.insert_data.assert_any_call(table_object, "some_conn", schema="test_schema")
 
     # view only object
+    view_object = {"definition": {"type": "sql", "definition": "some view"}}
 
+    test_view_schema = {"name": "test_schema", "views": [view_object]}
 
+    sq.setup_schema(schema=test_view_schema, conn="some_conn")
+
+    sq.create_object.assert_any_call(view_object, "some_conn")
 
     # other only object
+    other_object = {"definition": {"type": "sql", "definition": "some other"}}
+
+    test_other_schema = {"name": "test_schema", "others": [other_object]}
+
+    sq.setup_schema(schema=test_other_schema, conn="some_conn")
+
+    sq.create_object.assert_any_call(other_object, "some_conn")
+
+
+def test_setup_schema_ordering(mocker, test_sqema):
+    sq = test_sqema(sqema="", cm="", mode="development")
+
+    mocker.patch.object(Sqema, "create_object", auto_spec=True)
+    mocker.patch.object(Sqema, "insert_data", auto_spec=True)
+
+    # check the ordering
+    test_schema = {
+        "name": "test_schema",
+        "config": ["some config"],
+        "tables": ["some table"],
+        "views": ["some view"],
+        "others": ["some other"],
+    }
+
+    sq.setup_schema(schema=test_schema, conn="some_conn")
+
+    sq.create_object.assert_has_calls(
+        [
+            mocker.call("some config", "some_conn"),
+            mocker.call("some table", "some_conn"),
+            mocker.call("some view", "some_conn"),
+            mocker.call("some other", "some_conn"),
+        ]
+    )
+
+
+def test_get_sql(mocker):
+    # sq = test_sqema(sqema="", cm="", mode="development")
+
+    mocker.patch("__main__.open", mocker.mock_open(read_data="file definition"))
+
+    text_definition = {"type": "sql", "sql": "sql definition"}
+
+    assert Sqema.get_sql(text_definition) == "sql definition"
+
+
+
