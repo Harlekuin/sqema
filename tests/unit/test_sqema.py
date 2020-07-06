@@ -1,4 +1,5 @@
 from sqema import Sqema
+from sqema.exceptions import NotAValidDefinitionError
 
 
 def test_sqema_class_init(mocker):
@@ -119,13 +120,25 @@ def test_setup_schema_ordering(mocker, test_sqema):
 
 
 def test_get_sql(mocker):
-    # sq = test_sqema(sqema="", cm="", mode="development")
 
-    mocker.patch("__main__.open", mocker.mock_open(read_data="file definition"))
-
+    # -- inline sql definition --
     text_definition = {"type": "sql", "sql": "sql definition"}
 
     assert Sqema.get_sql(text_definition) == "sql definition"
 
+    # -- file based definition --
+    file_definition = {"type": "file", "path": "/some/path"}
 
+    # create the mock open function
+    test_read_data = "some test read data"
+    m = mocker.mock_open(read_data=test_read_data)
+    mocker.patch("builtins.open", m)
 
+    assert Sqema.get_sql(file_definition) == test_read_data
+
+    # invalid definition type
+    invalid_definition = {"type": "notvalid"}
+    try:
+        Sqema.get_sql(invalid_definition)
+    except NotAValidDefinitionError:
+        pass

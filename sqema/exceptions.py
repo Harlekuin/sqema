@@ -2,5 +2,5 @@
 
 
 class NotAValidDefinitionError(Exception):
-    def __init__(self, cm):
+    def __init__(self):
         self.msg = "Unknown Definition Type"
