@@ -142,3 +142,17 @@ def test_get_sql(mocker):
         Sqema.get_sql(invalid_definition)
     except NotAValidDefinitionError:
         pass
+
+
+def test_create_object(mocker, test_sqema, test_connection_manager):
+    cm = test_connection_manager()
+    sq = test_sqema(sqema="", cm=cm, mode="development")
+    test_object = {"name": "test name", "definition": "some definition"}
+
+    # mocker.patch.object(Sqema, "cm", cm)
+    mocker.patch.object(Sqema, "get_sql", auto_spec=True)
+
+    sq.create_object(obj=test_object, conn="some conn")
+
+    sq.get_sql.assert_any_call("some definition")
+
