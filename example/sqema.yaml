@@ -1,0 +1,52 @@
+databases:
+  - name: sqlite-db
+    schemas:
+      - name: main
+
+        config:
+          - definition:
+              type: sql
+              sql: DROP TABLE IF EXISTS User
+          - definition:
+              type: sql
+              sql: DROP INDEX IF EXISTS idx_User_FirstName
+
+        tables:
+          - name: User
+            definition:
+              type: sql
+              sql:
+                CREATE TABLE [main].[User] (
+                  id INTEGER PRIMARY KEY ASC AUTOINCREMENT,
+                  Name TEXT,
+                  Age INTEGER,
+                  Score INTEGER
+                )
+            post_definitions:
+              - type: sql
+                sql: CREATE UNIQUE INDEX idx_User_FirstName on User (Name)
+            data:
+              - modes:
+                  - test
+                  - development
+                file: ./data/User-test.csv
+        
+        views:
+          - name: vHighScores
+            definition:
+              type: sql
+              sql:
+                CREATE VIEW [main].[vHighScores] (Name, Score) AS
+                SELECT Name, Score
+                FROM User
+                Where Score >= 8
+        
+        others:
+          - name: vLowScores
+            definition:
+              type: sql
+              sql:
+                CREATE VIEW [main].[vLowScores] (Name, Score) AS
+                SELECT Name, Score
+                FROM User
+                Where Score < 8

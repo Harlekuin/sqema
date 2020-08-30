@@ -2,13 +2,17 @@
 sudo: false
 
 # Add database services
-services:
-  - mysql
-  - postgresql
-
-before_script:
-  - mysql -e 'CREATE DATABASE testdatabase;'
-  - psql -c 'create database testdatabase;' -U postgres
+# services:
+#   - mysql
+#   - postgresql
+# 
+# before_script:
+#   - mysql -e 'CREATE DATABASE prod;'
+#   - mysql -e 'CREATE DATABASE dev;'
+#   - mysql -e 'CREATE DATABASE test;'
+#   - psql -c 'create database prod;' -U postgres
+#   - psql -c 'create database dev;' -U postgres
+#   - psql -c 'create database test;' -U postgres
 
 # Set the build language to Python
 language: python
@@ -20,12 +24,12 @@ python:
 
 # Install the codecov pip dependency
 install:
-  - pip install codecov pytest behave
-  - pip install -r requirements.txt
+  - pip install codecov pytest 
+  - pip install -r requirements-dev.txt
 
 # Run the unit test
 script:
-  - coverage run -m behave
+  - coverage run -m pytest 
 
 
 # Push the results back to codecov

@@ -1,6 +1,0 @@
-CREATE TABLE [main].[MyTable] (
-  id INTEGER PRIMARY KEY ASC AUTOINCREMENT,
-  FirstName TEXT,
-  Age INTEGER,
-  Score REAL
-)

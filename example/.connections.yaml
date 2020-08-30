@@ -1,0 +1,5 @@
+connections:
+ 
+  - name: sqlite-db
+    driver: sqlite:///
+    connection: /tmp/my-test-database.db
