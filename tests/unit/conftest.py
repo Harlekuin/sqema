@@ -24,4 +24,7 @@ def test_connection_manager():
         def execute_sql(self, con_name, sql):
             pass
 
+        def get_engine(self, con_name):
+            return con_name
+
     return TestConnectionManager

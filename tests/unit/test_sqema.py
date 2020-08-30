@@ -1,5 +1,6 @@
 from sqema import Sqema
 from sqema.exceptions import NotAValidDefinitionError
+import pandas
 
 
 def test_sqema_class_init(mocker):
@@ -147,12 +148,45 @@ def test_get_sql(mocker):
 def test_create_object(mocker, test_sqema, test_connection_manager):
     cm = test_connection_manager()
     sq = test_sqema(sqema="", cm=cm, mode="development")
-    test_object = {"name": "test name", "definition": "some definition"}
+    test_object = {
+        "name": "test name",
+        "definition": "some definition",
+        "post_definitions": [{"type": "sql", "sql": "some post definition",}],
+    }
 
-    # mocker.patch.object(Sqema, "cm", cm)
     mocker.patch.object(Sqema, "get_sql", auto_spec=True)
 
     sq.create_object(obj=test_object, conn="some conn")
 
     sq.get_sql.assert_any_call("some definition")
+    sq.get_sql.assert_any_call(
+        {"type": "sql", "sql": "some post definition",}
+    )
 
+
+def test_insert_data(mocker, test_sqema, test_connection_manager):
+    cm = test_connection_manager()
+    sq = test_sqema(sqema="", cm=cm, mode="development")
+
+    # make sure nothing gets inserted if the mode doesn't match
+    test_object = {"name": "test name", "data": [{"modes": ["test"]}]}
+
+    mocker.patch.object(sq.cm, "get_engine", auto_spec=True)
+
+    sq.insert_data(test_object, conn="some conn", schema="some schema")
+
+    sq.cm.get_engine.assert_not_called()
+
+    # test if the data is inserted if the modes match
+    test_object = {
+        "name": "test name",
+        "data": [{"modes": ["development"], "file": "some file"}],
+    }
+
+    mocker.patch("pandas.read_csv")
+    mocker.patch.object(pandas.DataFrame, "to_sql", auto_spec=True)
+
+    sq.insert_data(table=test_object, conn="some conn", schema="some schema")
+
+    pandas.read_csv.assert_called_once_with("some file")
+    sq.cm.get_engine.assert_called_once_with("some conn")
